@@ -78,21 +78,13 @@ int main() {
 
 	for (device = allDevices; device != NULL; device = device->next) {
 
-		printf("%d. %s\n", ++i, device->name);
+		printf("%d. %s ", ++i, device->name);
 
+		if (device->description)
+			printf("%s", device->description);
 
-
+		printf("\n");
 
 	}
-
-
-
-
-
-
-
-
-
-
 
 }
