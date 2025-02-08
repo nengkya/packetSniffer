@@ -63,7 +63,7 @@ int main() {
     such as to clear out the default destination address of a “connected” datagram socket.
     
     */
-    pcap_if_t * allDevices;
+    pcap_if_t * allDevices, * device;
 
 	/*#define PCAP_ERRBUF_SIZE 256*/
 	char errorBuffer[PCAP_ERRBUF_SIZE];
