@@ -48,7 +48,7 @@ int main() {
     AF_UNIX is portable to more systems.
     AF_UNIX was the traditional name stemming from BSD, so even most POSIX systems support it.
     it is also the name of choice in the Unix98 specification.
-    The same is true for PF_UNIX vs. PF_LOCAL. PF is Protocol Format.
+    The same is true for PF_UNIX vs PF_LOCAL. PF is Protocol Format.
     AF_FILE
     this is another synonym for AF_LOCAL, for compatibility.
     PF_FILE is likewise a synonym for PF_LOCAL.
@@ -61,9 +61,9 @@ int main() {
     AF_UNSPEC
     this designates no particular address format. It is used only in rare cases,
     such as to clear out the default destination address of a “connected” datagram socket.
-    
     */
     pcap_if_t * allDevices, * device;
+	int i = 0;
 
 	/*#define PCAP_ERRBUF_SIZE 256*/
 	char errorBuffer[PCAP_ERRBUF_SIZE];
@@ -74,6 +74,20 @@ int main() {
 	*/
 	if (pcap_findalldevs(&allDevices, errorBuffer) == -1)
 		fprintf(stderr, "%s\n",errorBuffer);
+
+
+	for (device = allDevices; device != NULL; device = device->next) {
+
+		printf("%d. %s\n", ++i, device->name);
+
+
+
+
+	}
+
+
+
+
 
 
 
