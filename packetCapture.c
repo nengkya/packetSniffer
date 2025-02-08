@@ -68,7 +68,10 @@ int main() {
 	/*#define PCAP_ERRBUF_SIZE 256*/
 	char errorBuffer[PCAP_ERRBUF_SIZE];
 
-	/*int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf);*/
+	/*
+	int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf);
+	alldevsp is all devices pointer
+	*/
 	if (pcap_findalldevs(&allDevices, errorBuffer) == -1)
 		fprintf(stderr, "%s\n",errorBuffer);
 
