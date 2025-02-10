@@ -1,3 +1,5 @@
+https://chatgpt.com/c/67aa1aef-f124-8006-851c-3c3f5960b539  
+  
 https://www.tcpdump.org/pcap.html  
   
 https://www.google.com/search?client=firefox-b-e&channel=entpr&q=create+your+own+packet+sniffer+using+pcap_findalldevs  
