@@ -74,6 +74,8 @@ int main() {
     */
     if (pcap_findalldevs(&allDevices, errorBuffer) == -1)
 	fprintf(stderr, "%s\n",errorBuffer);
+<<<<<<< HEAD
+=======
 
     for (device = allDevices; device != NULL; device = device->next) {
 	printf("%d. %s ", ++i, device->name);
@@ -126,8 +128,88 @@ int main() {
 	    .jf = 0,  // No jump
 	    .k = 12   // Offset where EtherType field is located in Ethernet frame
 	};
+>>>>>>> 0fe2e5b2235018d15c79e26d83b9d1fb98bb5869
 
+    for (device = allDevices; device != NULL; device = device->next) {
+	printf("%d. %s ", ++i, device->name);
+	if (device->description)
+	    printf("%s", device->description);
+	printf("\n");
+    }
 
+<<<<<<< HEAD
+    /*
+    opening the device for sniffing
+
+    typedef struct pcap pcap_t
+
+    struct pcap {
+	int fd;
+	int snapshot;
+	int linktype;
+	int tzoff;      //timezone offset
+	int offset;     //offset for proper alignment
+
+	struct pcap_sf sf;
+	struct pcap_md md;
+
+	//read buffer.
+	int bufsize;
+	u_char * buffer;
+	u_char * bp;	//buff pointer
+	int cc;		//current capture
+
+	//place holder for pcap_next()
+	u_char * pkt;	//packet
+
+	//placeholder for filter code if bpf not in kernel
+	//barkley packet filter
+	struct bpf_program {
+	    struct bpf_insn * bf_insns; //pointer to an array of BPF instructions
+	    u_int bf_len;               //number of instructions in the array
+	};
+	
+	struct bpf_insn {
+	    u_short code;  //operation code (opcode)
+	    u_char  jt;    //jump offset if true
+	    u_char  jf;    //jump offset if false
+	    u_int   k;     //generic field for constants, offsets, or addresses
+	};
+
+	struct bpf_insn insn = {
+	    .code = BPF_LD | BPF_H | BPF_ABS,  // Load 16-bit halfword at absolute offset
+	    .jt = 0,  // No jump
+	    .jf = 0,  // No jump
+	    .k = 12   // Offset where EtherType field is located in Ethernet frame
+	};
+
+	common bpf opcodes
+	opcode	meaning
+	BPF_LD	Load data into accumulator
+	BPF_LDX	Load data into index register
+	BPF_ST	Store accumulator value
+	BPF_STX	Store index register value
+	BPF_ALU	Perform arithmetic/logic operations
+	BPF_JMP	Perform jump (conditional or unconditional)
+	BPF_RET	Return a packet decision (accept/drop)
+
+	BPF Example: Filter TCP Packets
+
+	A compiled BPF program for filtering TCP packets might consist of
+	multiple bpf_insn instructions, structured like:
+
+	struct bpf_insn bpf_program[] = {
+	    { BPF_LD  | BPF_H | BPF_ABS, 0, 0, 12 },  	//load ether type
+	    { BPF_JMP | BPF_JEQ | BPF_K, 0, 1, 0x0800 },//if ipv4, continue
+	    { BPF_RET | BPF_K, 0, 0, 0 } 		//otherwise, drop
+	};
+
+	struct bpf_program fcode;
+
+	char errbuf[PCAP_ERRBUF_SIZE];
+    };
+
+=======
 
 
 	struct bpf_program fcode;
@@ -135,6 +217,7 @@ int main() {
 	char errbuf[PCAP_ERRBUF_SIZE];
     };
 
+>>>>>>> 0fe2e5b2235018d15c79e26d83b9d1fb98bb5869
     pcap_t * pcap_open_live();
 
     */
