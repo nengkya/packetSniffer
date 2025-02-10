@@ -82,11 +82,16 @@ int main() {
 	printf("\n");
     }
 
+    for (device = allDevices; device != NULL; device = device->next) {
+	printf("%d. %s ", ++i, device->name);
+	if (device->description)
+	    printf("%s", device->description);
+	printf("\n");
+    }
+
     /*
-    opening the device for sniffing
-
+    //opening the device for sniffing
     typedef struct pcap pcap_t
-
     struct pcap {
 	int fd;
 	int snapshot;
@@ -121,10 +126,10 @@ int main() {
 	};
 
 	struct bpf_insn insn = {
-	    .code = BPF_LD | BPF_H | BPF_ABS,  // Load 16-bit halfword at absolute offset
-	    .jt = 0,  // No jump
-	    .jf = 0,  // No jump
-	    .k = 12   // Offset where EtherType field is located in Ethernet frame
+	    .code = BPF_LD | BPF_H | BPF_ABS,	//load 16-bit halfword at absolute offset
+	    .jt = 0,  				//no jump
+	    .jf = 0, 				//no jump
+	    .k = 12   			    //offset where EtherType field is located in Ethernet frame
 	};
 
 	common bpf opcodes
@@ -152,9 +157,13 @@ int main() {
 
 	char errbuf[PCAP_ERRBUF_SIZE];
     };
+    
+    */
+
+	struct bpf_program fcode;
+
+	char errbuf[PCAP_ERRBUF_SIZE];
 
     pcap_t * pcap_open_live();
-
-    */
 
 }
