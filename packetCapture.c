@@ -7,7 +7,8 @@ int main() {
 	typedef pcap_if pcap_if_t
 
 	pcap_if * next
-		if not NULL, a pointer to the next element in the list; NULL for the last element of the list.
+		if not NULL, a pointer to the next element in the list;
+		NULL for the last element of the list.
 	char * name
 		a pointer to a string giving a name for the device to pass to pcap_open_live()
 	char * description
@@ -19,7 +20,8 @@ int main() {
 		that is set if the interface is a loopback interface.
 
 	struct pcap_addr * next
-		if not NULL, a pointer to the next element in the list; NULL for the last element of the list
+		if not NULL, a pointer to the next element in the list;
+		NULL for the last element of the list
 	struct sockaddr * addr
 		a pointer to a struct sockaddr containing an address
 	struct sockaddr * netmask
@@ -119,7 +121,7 @@ int main() {
 		.code = BPF_LD | BPF_H | BPF_ABS,//load 16-bit halfword at absolute offset
 		.jt   =  0,						 //no jump
 		.jf	  =  0,						 //no jump
-		.k	  = 12						 //offset where ether type field is located in ethernet frame
+		.k	  = 12		   //offset where ether type field is located in ethernet frame
 	};
 
 	bpf opcode	meaning
@@ -138,7 +140,7 @@ int main() {
 	struct bpf_insn bpf_program[] = {
 		{BPF_LD  | BPF_H   | BPF_ABS, 0, 0,     12 }, //load ether type
 		{BPF_JMP | BPF_JEQ | BPF_K,   0, 1, 0x0800 }, //if ipv4, continue
-		{BPF_RET | BPF_K, 0, 0, 0 }					  //otherwise, drop
+		{BPF_RET | BPF_K, 0, 0, 0 }		      //otherwise, drop
 	};
 	*/
 
@@ -149,7 +151,28 @@ int main() {
 	struct bpf_program fcode;
 
 	char errbuf[PCAP_ERRBUF_SIZE];
+	
+	/*
+	//snapshot length of data capture
+	//promisc refers to promiscuous mode
+	//which is a network interface setting that allows a device
+	//to capture all network traffic passing by,
+	//regardless of whether the packets are addressed to it specifically
+	pcap_t * pcap_open_live(char * device, int snaplen, int promisc);
 
-	pcap_t * pcap_open_live();
+
+
+
+
+
+
+
+	*/
+
+
+
+
+
+
 
 }
