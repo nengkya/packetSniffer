@@ -4,7 +4,7 @@ https://www.tcpdump.org/pcap.html
   
 [create your own packet sniffer using pcap_findalldevs](https://www.google.com/search?client=firefox-b-e&channel=entpr&q=create+your+own+packet+sniffer+using+pcap_findalldevs)  
   
-https://talalio.medium.com/building-a-packet-sniffer-9460f394041      
+[talalio.medium.com/building-a-packet-sniffer](https://talalio.medium.com/building-a-packet-sniffer-9460f394041)      
   
 ##
     git remote set-url origin https://[personal access token]@github.com/nengkya/packetCapture  
