@@ -158,7 +158,8 @@ int main() {
 	//which is a network interface setting that allows a device
 	//to capture all network traffic passing by,
 	//regardless of whether the packets are addressed to it specifically
-	pcap_t * pcap_open_live(char * device, int snaplen, int promisc);
+	//timeoffset_in_milliseconds
+	pcap_t * pcap_open_live(char * device, int snaplen, int promisc, int to_ms);
 
 
 
