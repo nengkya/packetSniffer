@@ -106,6 +106,36 @@ int main() {
 		u_int  bf_len;              	//number of instructions in the array
     };
 
+	struct pcap_sf {
+		size_t hdrsize;
+		swapped_type_t lengths_swapped;
+		tstamp_scale_type_t scale_type;
+	};
+
+	typedef enum {
+		NOT_SWAPPED,
+		SWAPPED,
+		MAYBE_SWAPPED
+	} swapped_type_t;
+	
+	typedef enum {
+		TSTAMP_SCALE_SECONDS
+		TSTAMP_SCALE_MILLISECONDS
+		TSTAMP_SCALE_MICROSECONDS
+		TSTAMP_SCALE_NANOSECONDS
+		TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
+	} tstamp_scale_type_t
+
+	timestamp types are integer constants rather than typedef tstamp_scale_type_t.
+ 	these constants specify the source and characteristics of the timestamp applied to captured packets.
+  	the available timestamp types include :
+	PCAP_TSTAMP_HOST: Timestamp provided by the host machine.
+	PCAP_TSTAMP_HOST_LOWPREC: Low-precision timestamp from the host.
+	PCAP_TSTAMP_HOST_HIPREC: High-precision timestamp from the host.
+	PCAP_TSTAMP_HOST_HIPREC_UNSYNCED: High-precision, unsynchronized timestamp from the host.
+	PCAP_TSTAMP_ADAPTER: Timestamp provided by the network adapter.
+	PCAP_TSTAMP_ADAPTER_UNSYNCED: Timestamp from the network adapter, not synchronized with the system clock.
+ 
     struct bpf_insn {
 		u_short code;  //operation code (opcode)
 		u_char  jt;    //jump offset if true
