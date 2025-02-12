@@ -4,35 +4,37 @@
 int main() {
 
 	/*
-	typedef pcap_if pcap_if_t
+	typedef pcap_if pcap_if_t {
+		pcap_if * next
+			if not NULL, a pointer to the next element in the list; NULL for the last element of the list.
+		char * name
+			a pointer to a string giving a name for the device to pass to pcap_open_live()
+		char * description
+			if not NULL, a pointer to a string giving a human-readable description of the device
+		pcap_addr * addresses
+			a pointer to the first element of a list of addresses for the interface
+		u_int flags
+			PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
+			that is set if the interface is a loopback interface.
+	}
 
-	pcap_if * next
-		if not NULL, a pointer to the next element in the list; NULL for the last element of the list.
-	char * name
-		a pointer to a string giving a name for the device to pass to pcap_open_live()
-	char * description
-		if not NULL, a pointer to a string giving a human-readable description of the device
-	pcap_addr * addresses
-		a pointer to the first element of a list of addresses for the interface
-	u_int flags
-		PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
-		that is set if the interface is a loopback interface.
-
-	struct pcap_addr * next
-		if not NULL, a pointer to the next element in the list; NULL for the last element of the list
-	struct sockaddr * addr
-		a pointer to a struct sockaddr containing an address
-	struct sockaddr * netmask
-		if not NULL, a pointer to a struct sockaddr
-		that contains the netmask corresponding to the address pointed to by addr.
-	struct sockaddr * broadaddr
-		if not NULL, a pointer to a struct sockaddr
-		that contains the broadcast address corresponding to the address pointed to by addr;
-		may be null if the interface doesn't support broadcasts
-	struct sockaddr * dstaddr
-		if not NULL, a pointer to a struct sockaddr
-		that contains the destination address corresponding to the address pointed to by addr;
-		may be null if the interface isn't a point- to-point interface
+	struct pcap_addr {
+		struct pcap_addr * next
+			if not NULL, a pointer to the next element in the list; NULL for the last element of the list
+		struct sockaddr * addr
+			a pointer to a struct sockaddr containing an address
+		struct sockaddr * netmask
+			if not NULL, a pointer to a struct sockaddr
+			that contains the netmask corresponding to the address pointed to by addr.
+		struct sockaddr * broadaddr
+			if not NULL, a pointer to a struct sockaddr
+			that contains the broadcast address corresponding to the address pointed to by addr;
+			may be null if the interface doesn't support broadcasts
+		struct sockaddr * dstaddr
+			if not NULL, a pointer to a struct sockaddr
+			that contains the destination address corresponding to the address pointed to by addr;
+			may be null if the interface isn't a point- to-point interface
+	}
 
 	struct sockaddr {
 		ushort  sa_family;   //sa = socket address
@@ -108,6 +110,11 @@ int main() {
 		u_int  bf_len;              //number of instructions in the array
 	};
 
+	struct bpf_program {
+		struct bpf_insn * bf_insns; //pointer to the compiled BPF bytecode instructions
+		u_int bf_len;               //number of instructions in the program
+	};
+
 	struct bpf_insn {
 		u_short code;  //operation code (opcode)
 		u_char  jt;    //jump offset if true
@@ -141,8 +148,6 @@ int main() {
 		{BPF_RET | BPF_K, 0, 0, 0 }					  //otherwise, drop
 	};
 	*/
-
-	struct bpf_program fcode;
 
 	char errbuf[PCAP_ERRBUF_SIZE];
 
