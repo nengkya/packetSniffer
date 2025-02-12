@@ -3,6 +3,42 @@
 
 int main() {
 
+<<<<<<< HEAD
+	/*
+	typedef pcap_if pcap_if_t {
+		pcap_if * next
+			if not NULL, a pointer to the next element in the list; NULL for the last element of the list.
+		char * name
+			a pointer to a string giving a name for the device to pass to pcap_open_live()
+		char * description
+			if not NULL, a pointer to a string giving a human-readable description of the device
+		pcap_addr * addresses
+			a pointer to the first element of a list of addresses for the interface
+		u_int flags
+			PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
+			that is set if the interface is a loopback interface.
+	}
+
+	struct pcap_addr {
+		struct pcap_addr * next
+			if not NULL, a pointer to the next element in the list; NULL for the last element of the list
+		struct sockaddr * addr
+			a pointer to a struct sockaddr containing an address
+		struct sockaddr * netmask
+			if not NULL, a pointer to a struct sockaddr
+			that contains the netmask corresponding to the address pointed to by addr.
+		struct sockaddr * broadaddr
+			if not NULL, a pointer to a struct sockaddr
+			that contains the broadcast address corresponding to the address pointed to by addr;
+			may be null if the interface doesn't support broadcasts
+		struct sockaddr * dstaddr
+			if not NULL, a pointer to a struct sockaddr
+			that contains the destination address corresponding to the address pointed to by addr;
+			may be null if the interface isn't a point- to-point interface
+	}
+
+	struct sockaddr {
+=======
     /*
     typedef pcap_if pcap_if_t {
 
@@ -37,8 +73,14 @@ int main() {
     };
 
     struct sockaddr {
+<<<<<<< HEAD
 	ushort  sa_family;   //sa = socket address
 	char    sa_data[14];
+=======
+>>>>>>> 967b1a35356369380bb99587e65d906d8a3663c1
+		ushort  sa_family;   //sa = socket address
+		char    sa_data[14];
+>>>>>>> 73ed1491e65f1dca537fdc740ea0b9f0e7d641f7
     };
 
     sa_family is socket address spesific family structure.
@@ -112,6 +154,7 @@ int main() {
 	tstamp_scale_type_t scale_type;
     };
 
+<<<<<<< HEAD
     typedef enum {
 	NOT_SWAPPED,
 	SWAPPED,
@@ -125,6 +168,29 @@ int main() {
 	TSTAMP_SCALE_NANOSECONDS
 	TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
     } tstamp_scale_type_t
+=======
+<<<<<<< HEAD
+	struct bpf_program {
+		struct bpf_insn * bf_insns; //pointer to the compiled BPF bytecode instructions
+		u_int bf_len;               //number of instructions in the program
+	};
+
+	struct bpf_insn {
+=======
+	typedef enum {
+		NOT_SWAPPED,
+		SWAPPED,
+		MAYBE_SWAPPED
+	} swapped_type_t;
+	
+	typedef enum {
+		TSTAMP_SCALE_SECONDS
+		TSTAMP_SCALE_MILLISECONDS
+		TSTAMP_SCALE_MICROSECONDS
+		TSTAMP_SCALE_NANOSECONDS
+		TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
+	} tstamp_scale_type_t
+>>>>>>> 73ed1491e65f1dca537fdc740ea0b9f0e7d641f7
 
     timestamp types are integer constants rather than typedef tstamp_scale_type_t
     these constants specify the source and characteristics of the timestamp applied to captured packets
@@ -138,10 +204,18 @@ int main() {
 				  not synchronized with the system clock
  
     struct bpf_insn {
+<<<<<<< HEAD
 	u_short code;  //operation code (opcode)
 	u_char  jt;    //jump offset if true
 	u_char  jf;    //jump offset if false
 	u_int   k;     //generic field for constants, offsets, or addresses
+=======
+>>>>>>> 967b1a35356369380bb99587e65d906d8a3663c1
+		u_short code;  //operation code (opcode)
+		u_char  jt;    //jump offset if true
+		u_char  jf;    //jump offset if false
+		u_int   k;     //generic field for constants, offsets, or addresses
+>>>>>>> 73ed1491e65f1dca537fdc740ea0b9f0e7d641f7
     };
 
     struct bpf_insn insn = {
@@ -186,7 +260,11 @@ int main() {
     fprintf(stderr, "%s %s", device, errorBuffer);
 
 
+<<<<<<< HEAD
+	char errbuf[PCAP_ERRBUF_SIZE];
+=======
 
+>>>>>>> 967b1a35356369380bb99587e65d906d8a3663c1
 
 
 }
