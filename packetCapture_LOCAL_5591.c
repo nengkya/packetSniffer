@@ -65,7 +65,9 @@ int main() {
     this designates no particular address format. It is used only in rare cases,
     such as to clear out the default destination address of a “connected” datagram socket.
 
+
     typedef pcap_if pcap_if_t {
+
 	pcap_if * next
 	    if not NULL, a pointer to the next element in the list;
 	    NULL for the last element of the list.
@@ -244,8 +246,4 @@ int main() {
 	fprintf(stderr, "%s %s", device, errorBuffer);
 	char errbuf[PCAP_ERRBUF_SIZE];
 
-	/*#define BUFSIZ 8192 in /usr/include/stdio.h*/
-	handle = pcap_open_live(device, BUFSIZ, 1, 1000, errorBuffer);
-	fprintf(stderr, "%s %s", device, errorBuffer);
-	char errbuf[PCAP_ERRBUF_SIZE];
 }
