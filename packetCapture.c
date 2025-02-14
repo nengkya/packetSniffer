@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "pcap.h"
 
 
@@ -100,22 +101,20 @@ int main() {
 
     pcap_if_t * allDevices, * device;
     int i = 0;
-
     /*#define PCAP_ERRBUF_SIZE 256*/
     char errorBuffer[PCAP_ERRBUF_SIZE];
-
     /*
-    int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf);
-    alldevsp is all devices pointer
+    int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); alldevsp is all devices pointer
     */
     if (pcap_findalldevs(&allDevices, errorBuffer) == -1)
-    fprintf(stderr, "%s\n",errorBuffer);
-
-    for (device = allDevices; device != NULL; device = device->next) {
-    printf("%d. %s ", ++i, device->name);
-    if (device->description)
-    printf("%s", device->description);
-    printf("\n");
+        fprintf(stderr, "%s\n",errorBuffer);
+    
+    /*for (device = allDevices; device != NULL; device = device->next) {*/
+    for (device = allDevices; i < 10; device = device->next) {
+	printf("%d. %s ", ++i, device->name);
+	if (device->description)
+	    printf("%s", device->description);
+	printf("\n");
     }
 
     /*opening the device for sniffing
@@ -138,19 +137,21 @@ int main() {
 	struct bpf_insn * bf_insns; 	//pointer to an array of bp finstructions
 	u_int  bf_len;              	//number of instructions in the array
 	};
-
 	struct pcap_sf {
-	size_t hdrsize;
-	swapped_type_t lengths_swapped;
-	tstamp_scale_type_t scale_type;
+	    size_t hdrsize;
+	    swapped_type_t lengths_swapped;
+	    tstamp_scale_type_t scale_type;
 	};
-
-	typedef enum {
-	NOT_SWAPPED,
-	SWAPPED,
-	MAYBE_SWAPPED
+	struct bpf_program {
+	    struct bpf_insn * bf_insns; //pointer to the compiled BPF bytecode instructions
+	    u_int bf_len;               //number of instructions in the program
+	};
+	struct bpf_insn {
+	    typedef enum {
+		NOT_SWAPPED,
+		SWAPPED,
+		MAYBE_SWAPPED
 	} swapped_type_t;
-
 	typedef enum {
 	    TSTAMP_SCALE_SECONDS
 	    TSTAMP_SCALE_MILLISECONDS
@@ -158,27 +159,6 @@ int main() {
 	    TSTAMP_SCALE_NANOSECONDS
 	    TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
 	} tstamp_scale_type_t
-
-	struct bpf_program {
-	    struct bpf_insn * bf_insns; //pointer to the compiled BPF bytecode instructions
-	    u_int bf_len;               //number of instructions in the program
-	};
-
-	struct bpf_insn {
-	typedef enum {
-	    NOT_SWAPPED,
-	    SWAPPED,
-	    MAYBE_SWAPPED
-	} swapped_type_t;
-
-	typedef enum {
-	TSTAMP_SCALE_SECONDS
-	TSTAMP_SCALE_MILLISECONDS
-	TSTAMP_SCALE_MICROSECONDS
-	TSTAMP_SCALE_NANOSECONDS
-	TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
-	} tstamp_scale_type_t
-
 	timestamp types are integer constants rather than typedef tstamp_scale_type_t
 	these constants specify the source and characteristics of
 	the timestamp applied to captured packets.
@@ -190,7 +170,6 @@ int main() {
 	PCAP_TSTAMP_ADAPTER: Timestamp provided by the network adapter
 	PCAP_TSTAMP_ADAPTER_UNSYNCED: timestamp from the network adapter,
 				      not synchronized with the system clock
-
 	struct bpf_insn {
 	    u_short code;  //operation code (opcode)
 	    u_char  jt;    //jump offset if true
@@ -201,14 +180,12 @@ int main() {
 	    u_char  jf;    //jump offset if false
 	    u_int   k;     //generic field for constants, offsets, or addresses
 	};
-
 	struct bpf_insn insn = {
 	    .code = BPF_LD | BPF_H | BPF_ABS,//load 16-bit halfword at absolute offset
 	    .jt   =  0,			     //no jump
 	    .jf	  =  0,			     //no jump
 	    .k	  = 12		   	   //offset where ether type field is located in ethernet frame
 	};
-
 	bpf opcode	meaning
 	BPF_LD		load data into accumulator
 	BPF_LDX		load data into index register
@@ -217,7 +194,6 @@ int main() {
 	BPF_ALU		perform arithmetic/logic operations
 	BPF_JMP		perform jump (conditional or unconditional)
 	BPF_RET		return a packet decision (accept/drop)
-
 	bpf example : filter tcp packets
 	a compiled bpf program for filtering tcp packets might consist of
 	multiple bpf_insn instructions, structured like :
@@ -227,25 +203,33 @@ int main() {
 	{BPF_RET | BPF_K, 0, 0, 0 }		      //otherwise, drop
 	};
 	*/
-	struct bpf_program fcode;
+    struct bpf_program * fcode;
 
-	/*
-	snapshot length of data capture
-	promisc refers to promiscuous mode
-	which is a network interface setting that allows a device
-	to capture all network traffic passing by,
-	regardless of whether the packets are addressed to it specifically
-	timeoffset_in_milliseconds
-	error buffer
-	pcap_t * pcap_open_live(char * device, int snaplen, int promisc, int to_ms, char * ebuf);
-	*/
-	pcap_t * handle;
-	handle = pcap_open_live(device, BUFSIZ, 1, 1000, errorBuffer);
-	fprintf(stderr, "%s %s", device, errorBuffer);
-	char errbuf[PCAP_ERRBUF_SIZE];
+    /*
+    snapshot length of data capture = BUF_SIZ
+    promisc refers to promiscuous mode = 1 (enable) or 0 (disable)
+    which is a network interface setting that allows a device
+    to capture all network traffic passing by,
+    regardless of whether the packets are addressed to it specifically
+    timeoffset_in_milliseconds = 1000
+    error buffer
+    pcap_t * pcap_open_live(char * device, int snaplen, int promisc, int to_ms, char * ebuf);
+    #define BUFSIZ 8192 in /usr/include/stdio.
+    handle translated into manage
+    */
+    
+    pcap_t * handle;
+    handle = pcap_open_live(device, BUFSIZ, 1, 1000, errorBuffer);
+    if (handle == NULL)
+	fprintf(stderr, "%s %s\n", device, errorBuffer);
 
-	/*#define BUFSIZ 8192 in /usr/include/stdio.h*/
-	handle = pcap_open_live(device, BUFSIZ, 1, 1000, errorBuffer);
-	fprintf(stderr, "%s %s", device, errorBuffer);
-	char errbuf[PCAP_ERRBUF_SIZE];
+    pcap_datalink(handle);    
+    fprintf(stderr, "%s\n", device);
+
+    /*int pcap_compile(pcap_t * p, struct bpf_program * fp,*/
+    int pcap_compile(handle, fcode);
+
+
+
+
 }
