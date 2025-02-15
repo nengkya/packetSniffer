@@ -1,7 +1,5 @@
 [tcpdump.org](https://www.tcpdump.org/pcap.html)  
   
-[create your own packet sniffer using pcap_findalldevs](https://www.google.com/search?client=firefox-b-e&channel=entpr&q=create+your+own+packet+sniffer+using+pcap_findalldevs)  
-  
 [talalio.medium.com/building-a-packet-sniffer](https://talalio.medium.com/building-a-packet-sniffer-9460f394041)      
   
 ##
