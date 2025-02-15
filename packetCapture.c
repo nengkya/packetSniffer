@@ -110,22 +110,22 @@ int main() {
     
     char * DeviceIsPointerToChar = (char *)malloc(55 * sizeof(char));
     for (device = allDevices; device != NULL; device = device->next) {
-	printf("%d. %s ", ++i, device->name);
 	if (1 == i) {
 	    DeviceIsPointerToChar = device->name;
 	}
+	printf("%d. %s ", ++i, device->name);
 	if (device->description)
 	    printf("%s", device->description);
 	printf("\n");
     }
 
-    pcap_findalldevs(&allDevices, errorBufferChar256);
     device = allDevices;
 
     bpf_u_int32 *  netIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
     bpf_u_int32 * maskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
     pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32,
 	    maskIsPointerToBPFunsignedInt32, errorBufferChar256);
+    fprintf(stderr, "%s\n", device->name);
 
     /*:noh = no highlight after search in nvim*/
     /*opening the device for sniffing
@@ -214,7 +214,7 @@ int main() {
 	{BPF_RET | BPF_K, 0, 0, 0 }		      //otherwise, drop
 	};
 	*/
-    struct bpf_program * fcode;
+    struct bpf_program * fcode = (struct bpf_program *)malloc(sizeof(struct bpf_program));
 
     /*
     snapshot length of data capture = BUF_SIZ
