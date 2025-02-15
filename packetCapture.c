@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "pcap.h"
 
-
 int main() {
 
     /*
@@ -102,21 +101,33 @@ int main() {
     pcap_if_t * allDevices, * device;
     int i = 0;
     /*#define PCAP_ERRBUF_SIZE 256*/
-    char errorBuffer[PCAP_ERRBUF_SIZE];
+    char errorBufferChar256[PCAP_ERRBUF_SIZE];
     /*
     int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); alldevsp is all devices pointer
     */
-    if (pcap_findalldevs(&allDevices, errorBuffer) == -1)
-        fprintf(stderr, "%s\n",errorBuffer);
+    if (pcap_findalldevs(&allDevices, errorBufferChar256) == -1)
+        fprintf(stderr, "%s\n",errorBufferChar256);
     
-    /*for (device = allDevices; device != NULL; device = device->next) {*/
-    for (device = allDevices; i < 10; device = device->next) {
+    char * DeviceIsPointerToChar = (char *)malloc(55 * sizeof(char));
+    for (device = allDevices; device != NULL; device = device->next) {
 	printf("%d. %s ", ++i, device->name);
+	if (1 == i) {
+	    DeviceIsPointerToChar = device->name;
+	}
 	if (device->description)
 	    printf("%s", device->description);
 	printf("\n");
     }
 
+    pcap_findalldevs(&allDevices, errorBufferChar256);
+    device = allDevices;
+
+    bpf_u_int32 *  netIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+    bpf_u_int32 * maskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+    pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32,
+	    maskIsPointerToBPFunsignedInt32, errorBufferChar256);
+
+    /*:noh = no highlight after search in nvim*/
     /*opening the device for sniffing
     typedef struct pcap pcap_t
     struct pcap {
@@ -217,19 +228,27 @@ int main() {
     #define BUFSIZ 8192 in /usr/include/stdio.
     handle translated into manage
     */
-    
     pcap_t * handle;
-    handle = pcap_open_live(device, BUFSIZ, 1, 1000, errorBuffer);
+    handle = pcap_open_live(DeviceIsPointerToChar, BUFSIZ, 1, 1000, errorBufferChar256);
     if (handle == NULL)
-	fprintf(stderr, "%s %s\n", device, errorBuffer);
+	fprintf(stderr, "%s %s\n", DeviceIsPointerToChar, errorBufferChar256);
 
-    pcap_datalink(handle);    
-    fprintf(stderr, "%s\n", device);
+    /*
+    LINKTYPE_name 	LINKTYPE_value 	corresponding DLT_  name description
+    LINKTYPE_ETHERNET 	1 		DLT_EN10MB	    IEEE 802.3 Ethernet (10Mb, 100Mb, 1000Mb,
+							    and up);
+							    the 10MB in the DLT_ name is historical 
+    */
+    if (pcap_datalink(handle) != DLT_EN10MB)
+	fprintf(stderr,
+	    "Device %s doesnt provide ethernet headers - not supported\n", DeviceIsPointerToChar);
 
-    /*int pcap_compile(pcap_t * p, struct bpf_program * fp,*/
-    int pcap_compile(handle, fcode);
+    /*int pcap_compile(pcap_t * p, struct bpf_program * fp,
+	char * str, int optimize, bpf_u_int32 mask);*/
+    //pcap_compile(handle, fcode);
 
-
+    /*int pcap_setfilter(pcap_t * p, struct bpf_program * fp);*/
+    pcap_setfilter(handle, fcode);
 
 
 }
