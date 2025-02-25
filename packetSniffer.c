@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <pcap/pcap.h>
+#include "stdlib.h" /*exit();*/
+
 int main() {
 
 	/*
@@ -80,50 +84,70 @@ int main() {
 			u_int interrupted;
 			struct timespec firstsel;
 
-			if there's currently a buffer being actively processed, then it is referenced here;
-			'buffer' is also pointed at it, but offset by the size of the header.
-			struct bpf_zbuf_header *bzh;
+			//if there's currently a buffer being actively processed, then it is referenced here;
+			//'buffer' is also pointed at it, but offset by the size of the header.
+			struct bpf_zbuf_header * bzh; zero-copy buffer
 		#endif HAVE_ZEROCOPY_BPF
 
 
 
-#ifdef HAVE_REMOTE
-	/*!
-		There is really a mess with previous variables, and it seems to me that they are not used
-		(they are used in pcap_pf.c only). I think we have to start using them.
-		The meaning is the following:
+		#ifdef HAVE_REMOTE
+			there is really a mess with previous variables, and it seems to me that they are not used
+			(they are used in pcap_pf.c only). I think we have to start using them.
+			The meaning is the following:
 
-		- TotPkts: the amount of packets received by the bpf filter, *before* applying the filter
-		- TotAccepted: the amount of packets that satisfies the filter
-		- TotDrops: the amount of packet that were dropped into the kernel buffer because of lack of space
-		- TotMissed: the amount of packets that were dropped by the physical interface; it is basically
-			the value of the hardware counter into the card. This number is never put to zero, so this number
-			takes into account the *total* number of interface drops starting from the interface power-on.
-		- OrigMissed: the amount of packets that were dropped by the interface *when the capture begins*.
-			This value is used to detect the number of packets dropped by the interface *during the present
-			capture*, so that (ps_ifdrops= TotMissed - OrigMissed).
-	*/
-		unsigned int TotNetDrops;       //!< keeps the number of packets that have been dropped by the network
-	/*!
-		\brief It keeps the number of packets that have been received by the application.
+			- TotPkts	  : the amount of packets received by the bpf filter, *before* applying the filter
+			- TotAccepted : the amount of packets that satisfies the filter
+			- TotDrops	  : the amount of packet that were dropped into the kernel buffer because of lack of space
+			- TotMissed	  : the amount of packets that were dropped by the physical interface;
+							it is basically the value of the hardware counter into the card.
+							this number is never put to zero, so this number takes into account the *total* number of
+							interface drops starting from the interface power-on.
+			- OrigMissed  : the amount of packets that were dropped by the interface *when the capture begins*.
+							this value is used to detect the number of packets dropped by the interface
+							*during the present capture*, so that (ps_ifdrops = TotMissed - OrigMissed).
 
-		Packets dropped by the kernel buffer are not counted in this variable. The variable is always
-		equal to (TotAccepted - TotDrops), exept for the case of remote capture, in which we have also
-		packets in fligh, i.e. that have been transmitted by the remote host, but that have not been
-		received (yet) from the client. In this case, (TotAccepted - TotDrops - TotNetDrops) gives a
-		wrong result, since this number does not corresponds always to the number of packet received by
-		the application. For this reason, in the remote capture we need another variable that takes
-		into account of the number of packets actually received by the application.
-	*/
-		unsigned int TotCapt;
-#endif /* HAVE_REMOTE */
+			unsigned int TotNetDrops; keeps the number of packets that have been dropped by the network
+
+			\brief It keeps the number of packets that have been received by the application.
+			packets dropped by the kernel buffer are not counted in this variable.
+			the variable is always equal to (TotAccepted - TotDrops),
+			except for the case of remote capture, in which we have also packets in fligh, i.e. that have been transmitted by the remote host,
+			but that have not been received (yet) from the client.
+			in this case, (TotAccepted - TotDrops - TotNetDrops) gives a wrong result,
+			since this number does not corresponds always to the number of packet received by the application.
+			for this reason, in the remote capture we need another variable that takes into
+			account of the number of packets actually received by the application.
+			unsigned int TotCapt;
+		#endif HAVE_REMOTE
 
 	};
+	
+	en → ethernet interface
+	p0 → PCI bus number (bus 0)
+	s3 → slot number 3
 
-
-
+	snaplen is "snapshot length".
+	it specifies the maximum number of bytes to capture from each packet.
+	larger snaplen captures more of the packet but may use more memory and processing power.
+	smaller snaplen captures only part of the packet, which can be useful for performance optimization
+	if you only need headers (e.g., capturing just ethernet/IP/TCP headers without full payloads).
+	if snaplen is too small, some packet data may be truncated.
+	
+	promisc is "promiscuous mode" (select all).
+	1 enables  promiscuous mode, meaning the network interface captures all packets, including those not addressed to it.
+	0 disables promiscuous mode, meaning the interface captures only packets addressed to it or broadcast packets.
+	promiscuous mode is useful for network analysis and security monitoring.
+	pcap_t * pcap_open_live(const char * device, int snaplen, int promisc, int timeout_ms, char * errbuf);
 	*/
-	pcap_t
+	char * device = "enp0s3";
+	char errorBuffer[PCAP_ERRBUF_SIZE];
+	pcap_t * capturedDevice = pcap_open_live(device, BUFSIZ, 0, -1, errorBuffer);
+
+	if (NULL == capturedDevice) {
+		printf("Error : pcap_open_live() %s\n", errorBuffer);
+		exit(1);
+	}
 
 
 
