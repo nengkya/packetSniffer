@@ -34,64 +34,56 @@ int main() {
 	struct pcap_md {
 			struct pcap_stat stat;
 			int use_bpf;		  using kernel filter
-			u_long	TotPkts;	  can't oflow for 79 hrs on ether
-			u_long	TotAccepted;  count accepted by filter
-			u_long	TotDrops;	  count of dropped packets
-			long	TotMissed;	  missed by i/f during this run
-			long	OrigMissed;	  missed by i/f before this run
-			char	* device;	  device name
+			u_long TotPkts;		  can't oflow for 79 hrs on ether
+			u_long TotAccepted;	  count accepted by filter
+			u_long TotDrops;	  count of dropped packets
+			long   TotMissed;	  missed by i/f during this run
+			long   OrigMissed;	  missed by i/f before this run
+			char   * device;	  device name
 			int	timeout;		  timeout for buffering
-			int	must_clear;		  stuff we must clear when we close */
+			int	must_clear;		  stuff we must clear when we close
 			struct pcap * next;	  list of open pcaps that need stuff cleared on close
 		#ifdef linux
-			int	sock_packet;	  using Linux 2.0 compatible interface */
-			int	cooked;			  using SOCK_DGRAM rather than SOCK_RAW */
-			int	ifindex;		  interface index of device we're bound to */
+			int	sock_packet;	  using Linux 2.0 compatible interface
+			int	cooked;			  using SOCK_DGRAM rather than SOCK_RAW
+			int	ifindex;		  interface index of device we're bound to
 			int	lo_ifindex;		  interface index of the loopback device
-			u_int	packets_read; count of packets read with recvfrom()
+			u_int packets_read;	  count of packets read with recvfrom()
 			bpf_u_int32 oldmode;  mode to restore when turning monitor mode off
-			u_int	tp_version;	  version of tpacket_hdr for mmaped ring
-			u_int	tp_hdrlen;    hdrlen of tpacket_hdr for mmaped ring
+			u_int tp_version;	  version of transport packet header for mmaped ring
+			u_int tp_hdrlen;	  header length of transport packet header for mmaped ring
 		#endif linux
 
-#ifdef HAVE_DAG_API
-#ifdef HAVE_DAG_STREAMS_API
-		u_char	*dag_mem_bottom;	/* DAG card current memory bottom pointer */
-		u_char	*dag_mem_top;	/* DAG card current memory top pointer */
-#else /* HAVE_DAG_STREAMS_API */
-		void	*dag_mem_base;	/* DAG card memory base address */
-		u_int	dag_mem_bottom;	/* DAG card current memory bottom offset */
-		u_int	dag_mem_top;	/* DAG card current memory top offset */
-#endif /* HAVE_DAG_STREAMS_API */
-		int	dag_fcs_bits;	/* Number of checksum bits from link layer */
-		int	dag_offset_flags; /* Flags to pass to dag_offset(). */
-		int	dag_stream;	/* DAG stream number */
-		int	dag_timeout;	/* timeout specified to pcap_open_live.
-					 * Same as in linux above, introduce
-					 * generally? */
-#endif /* HAVE_DAG_API */
-#ifdef HAVE_ZEROCOPY_BPF
-		   /*
-			* Zero-copy read buffer -- for zero-copy BPF.  'buffer' above will
-			* alternative between these two actual mmap'd buffers as required.
-			* As there is a header on the front size of the mmap'd buffer, only
-			* some of the buffer is exposed to libpcap as a whole via bufsize;
-			* zbufsize is the true size.  zbuffer tracks the current zbuf
-			* assocated with buffer so that it can be used to decide which the
-			* next buffer to read will be.
-			*/
-		   u_char *zbuf1, *zbuf2, *zbuffer;
-		   u_int zbufsize;
-		   u_int zerocopy;
-		   u_int interrupted;
-		   struct timespec firstsel;
-		   /*
-			* If there's currently a buffer being actively processed, then it is
-			* referenced here; 'buffer' is also pointed at it, but offset by the
-			* size of the header.
-			*/
-		   struct bpf_zbuf_header *bzh;
-#endif /* HAVE_ZEROCOPY_BPF */
+		#ifdef HAVE_DAG_API Data Acquisition and Generation
+			#ifdef HAVE_DAG_STREAMS_API
+				u_char * dag_mem_bottom; DAG card current memory bottom pointer
+				u_char * dag_mem_top;	 DAG card current memory top pointer
+			#else HAVE_DAG_STREAMS_API
+				void   * dag_mem_base;	 DAG card memory base address
+				u_int    dag_mem_bottom; DAG card current memory bottom offset
+				u_int	 dag_mem_top;	 DAG card current memory top offset
+			#endif HAVE_DAG_STREAMS_API
+				int	dag_fcs_bits;		 number of checksum bits from link layer
+				int	dag_offset_flags;	 flags to pass to dag_offset()
+				int	dag_stream;			 DAG stream number
+				int	dag_timeout;		 timeout specified to pcap_open_live. same as in linux above, introduce generally ?
+		#endif HAVE_DAG_API
+
+		#ifdef HAVE_ZEROCOPY_BPF
+		zero-copy read buffer -- for zero-copy BPF. 'buffer' above will alternative between these two actual mmap'd buffers as required.
+		as there is a header on the front size of the mmap'd buffer, only some of the buffer is exposed to libpcap as a whole via bufsize;
+		zbufsize is the true size.
+		zbuffer tracks the current zbuf assocated with buffer so that it can be used to decide which the next buffer to read will be.
+			u_char *zbuf1, *zbuf2, *zbuffer;
+			u_int zbufsize;
+			u_int zerocopy;
+			u_int interrupted;
+			struct timespec firstsel;
+
+			if there's currently a buffer being actively processed, then it is referenced here;
+			'buffer' is also pointed at it, but offset by the size of the header.
+			struct bpf_zbuf_header *bzh;
+		#endif HAVE_ZEROCOPY_BPF
 
 
 
