@@ -4,43 +4,43 @@
 int main() {
 
     /*
-    typedef pcap_if pcap_if_t {
-	pcap_if * next
-	    if not NULL, a pointer to the next element in the list;
-	    NULL for the last element of the list.
-	char * name
-	    a pointer to a string giving a name for the device to pass to pcap_open_live()
-	char * description
-	    if not NULL, a pointer to a string giving a human-readable description of the device
-	pcap_addr * addresses
-	    a pointer to the first element of a list of addresses for the interface
-	u_int flags
-	    PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
-	    that is set if the interface is a loopback interface.
-    }
+    typedef struct pcap_if {
+		pcap_if * next
+		    if not NULL, a pointer to the next element in the list;
+		    NULL for the last element of the list.
+		char * name
+		    a pointer to a string giving a name for the device to pass to pcap_open_live()
+		char * description
+		    if not NULL, a pointer to a string giving a human-readable description of the device
+		pcap_addr * addresses
+		    a pointer to the first element of a list of addresses for the interface
+		u_int flags
+		    PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
+		    that is set if the interface is a loopback interface.
+    } pcap_if_t;
 
     struct pcap_addr {
-	struct pcap_addr * next
-	    if not NULL, a pointer to the next element in the list;
-	    NULL for the last element of the list
-	struct sockaddr * addr
-	    a pointer to a struct sockaddr containing an address
-	struct sockaddr * netmask
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the netmask corresponding to the address pointed to by addr.
-	struct sockaddr * broadaddr
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the broadcast address corresponding to the address pointed to by addr;
-	    may be null if the interface doesn't support broadcasts
-	struct sockaddr * dstaddr
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the destination address corresponding to the address pointed to by addr;
-	    may be null if the interface isn't a point- to-point interface
-    }
+		struct pcap_addr * next
+		    if not NULL, a pointer to the next element in the list;
+		    NULL for the last element of the list
+		struct sockaddr * addr
+		    a pointer to a struct sockaddr containing an address
+		struct sockaddr * netmask
+		    if not NULL, a pointer to a struct sockaddr
+		    that contains the netmask corresponding to the address pointed to by addr.
+		struct sockaddr * broadaddr
+		    if not NULL, a pointer to a struct sockaddr
+		    that contains the broadcast address corresponding to the address pointed to by addr;
+		    may be null if the interface doesn't support broadcasts
+		struct sockaddr * dstaddr
+		    if not NULL, a pointer to a struct sockaddr
+		    that contains the destination address corresponding to the address pointed to by addr;
+		    may be null if the interface isn't a point- to-point interface
+    };
 
     struct sockaddr {
-	sa_family_t     sa_family; //socket addres
-	char            sa_data[];
+		sa_family_t	sa_family; //socket addres
+		char		sa_data[];
     };
     sa_family is socket address spesific family structure.
     Address Format :
@@ -64,47 +64,13 @@ int main() {
     AF_UNSPEC
     this designates no particular address format. It is used only in rare cases,
     such as to clear out the default destination address of a “connected” datagram socket.
-
-    typedef pcap_if pcap_if_t {
-	pcap_if * next
-	    if not NULL, a pointer to the next element in the list;
-	    NULL for the last element of the list.
-	char * name
-	    a pointer to a string giving a name for the device to pass to pcap_open_live()
-	char * description
-	    if not NULL, a pointer to a string giving a human-readable description of the device
-	pcap_addr * addresses
-	    a pointer to the first element of a list of addresses for the interface
-	u_int flags
-	    PCAP_IF_ interface flags. Currently the only possible flag is PCAP_IF_LOOPBACK,
-	    that is set if the interface is a loopback interface.
-	struct pcap_addr * next
-	    if not NULL, a pointer to the next element in the list;
-	    NULL for the last element of the list
-	struct sockaddr * addr
-	    a pointer to a struct sockaddr containing an address
-	struct sockaddr * netmask
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the netmask corresponding to the address pointed to by addr.
-	struct sockaddr * broadaddr
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the broadcast address corresponding to the address pointed to by addr;
-	    may be null if the interface doesn't support broadcasts
-	struct sockaddr * dstaddr
-	    if not NULL, a pointer to a struct sockaddr
-	    that contains the destination address corresponding to the address pointed to by addr;
-	    may be null if the interface isn't a point- to-point interface
-    };
-
     */
 
     pcap_if_t * allDevices, * device;
     int i = 0;
     /*#define PCAP_ERRBUF_SIZE 256*/
     char errorBufferChar256[PCAP_ERRBUF_SIZE];
-    /*
-    int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); alldevsp is all devices pointer
-    */
+    /*int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); alldevsp is all devices pointer*/
     if (pcap_findalldevs(&allDevices, errorBufferChar256) == -1)
         fprintf(stderr, "%s\n",errorBufferChar256);
     
@@ -123,47 +89,48 @@ int main() {
 
     bpf_u_int32 *  netIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
     bpf_u_int32 * maskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
-    pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32,
-	    maskIsPointerToBPFunsignedInt32, errorBufferChar256);
+    pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32, maskIsPointerToBPFunsignedInt32, errorBufferChar256);
     fprintf(stderr, "%s\n", device->name);
 
     /*:noh = no highlight after search in nvim*/
     /*opening the device for sniffing
-    typedef struct pcap pcap_t
-    struct pcap {
-	int fd;
-	int snapshot;
-	int linktype;
-	int tzoff;      		//timezone offset
-	int offset;     		//offset for proper alignment
-	struct pcap_sf sf;
-	struct pcap_md md;
-	int bufsize;			//read buffer
-	u_char * buffer;
-	u_char * bp;			//buff pointer
-	int cc;				//current capture
-	u_char * pkt;			//place holder for packet pcap_next()
-	//placeholder for filter code if bpf (barkley packet filter) not in kernel
-	struct bpf_program {
-	struct bpf_insn * bf_insns; 	//pointer to an array of bp finstructions
-	u_int  bf_len;              	//number of instructions in the array
-	};
+    typedef struct pcap {
+		int fd;
+		int snapshot;
+		int linktype;
+		int tzoff;					//timezone offset
+		int offset;					//offset for proper alignment
+		struct pcap_sf sf;
+		struct pcap_md md; //metadata
+		int bufsize;				//read buffer
+		u_char * buffer;
+		u_char * bp;				//buff pointer
+		int cc;						//current capture
+		u_char * pkt;				//place holder for packet pcap_next()
+		//placeholder for filter code if bpf (barkley packet filter) not in kernel
+		struct bpf_program;
+		struct bpf_insn * bf_insns;	//pointer to an array of bp finstructions
+		u_int  bf_len;				//number of instructions in the array
+	} pcap_t;
+ 
 	struct pcap_sf {
-	    size_t hdrsize;
+	    size_t hdrsize; //header size
 	    swapped_type_t lengths_swapped;
 	    tstamp_scale_type_t scale_type;
 	};
+ 
 	struct bpf_program {
 	    struct bpf_insn * bf_insns; //pointer to the compiled BPF bytecode instructions
 	    u_int bf_len;               //number of instructions in the program
 	};
-	struct bpf_insn {
-	    typedef enum {
+
+ 	typedef enum {
 		NOT_SWAPPED,
 		SWAPPED,
 		MAYBE_SWAPPED
 	} swapped_type_t;
-	typedef enum {
+	
+ 	typedef enum {
 	    TSTAMP_SCALE_SECONDS
 	    TSTAMP_SCALE_MILLISECONDS
 	    TSTAMP_SCALE_MICROSECONDS
@@ -171,15 +138,14 @@ int main() {
 	    TSTAMP_SCALE_UNKNOWN (for an undefined or error case)
 	} tstamp_scale_type_t
 	timestamp types are integer constants rather than typedef tstamp_scale_type_t
-	these constants specify the source and characteristics of
-	the timestamp applied to captured packets.
+	these constants specify the source and characteristics of the timestamp applied to captured packets.
 	the available timestamp types include :
-	PCAP_TSTAMP_HOST: Timestamp provided by the host machine
-	PCAP_TSTAMP_HOST_LOWPREC: Low-precision timestamp from the host
-	PCAP_TSTAMP_HOST_HIPREC: High-precision timestamp from the host
-	PCAP_TSTAMP_HOST_HIPREC_UNSYNCED: High-precision, unsynchronized timestamp from the host
-	PCAP_TSTAMP_ADAPTER: Timestamp provided by the network adapter
-	PCAP_TSTAMP_ADAPTER_UNSYNCED: timestamp from the network adapter,
+	PCAP_TSTAMP_HOST				 : Timestamp provided by the host machine
+	PCAP_TSTAMP_HOST_LOWPREC		 : Low-precision timestamp from the host
+	PCAP_TSTAMP_HOST_HIPREC			 : High-precision timestamp from the host
+	PCAP_TSTAMP_HOST_HIPREC_UNSYNCED : High-precision, unsynchronized timestamp from the host
+	PCAP_TSTAMP_ADAPTER				 : Timestamp provided by the network adapter
+	PCAP_TSTAMP_ADAPTER_UNSYNCED	 : timestamp from the network adapter,
 				      not synchronized with the system clock
 	struct bpf_insn {
 	    u_short code;  //operation code (opcode)
@@ -193,9 +159,9 @@ int main() {
 	};
 	struct bpf_insn insn = {
 	    .code = BPF_LD | BPF_H | BPF_ABS,//load 16-bit halfword at absolute offset
-	    .jt   =  0,			     //no jump
-	    .jf	  =  0,			     //no jump
-	    .k	  = 12		   	   //offset where ether type field is located in ethernet frame
+	    .jt   =  0,	   //no jump
+	    .jf	  =  0,	   //no jump
+	    .k	  = 12	   //offset where ether type field is located in ethernet frame
 	};
 	bpf opcode	meaning
 	BPF_LD		load data into accumulator
@@ -209,9 +175,9 @@ int main() {
 	a compiled bpf program for filtering tcp packets might consist of
 	multiple bpf_insn instructions, structured like :
 	struct bpf_insn bpf_program[] = {
-	{BPF_LD  | BPF_H   | BPF_ABS, 0, 0,     12 }, //load ether type
-	{BPF_JMP | BPF_JEQ | BPF_K,   0, 1, 0x0800 }, //if ipv4, continue
-	{BPF_RET | BPF_K, 0, 0, 0 }		      //otherwise, drop
+		{BPF_LD  | BPF_H   | BPF_ABS, 0, 0,     12 }, //load ether type
+		{BPF_JMP | BPF_JEQ | BPF_K,   0, 1, 0x0800 }, //if ipv4, continue
+		{BPF_RET | BPF_K, 0, 0, 0 }					  //otherwise, drop
 	};
 	*/
     struct bpf_program * fcode = (struct bpf_program *)malloc(sizeof(struct bpf_program));
@@ -235,20 +201,18 @@ int main() {
 
     /*
     LINKTYPE_name 	LINKTYPE_value 	corresponding DLT_  name description
-    LINKTYPE_ETHERNET 	1 		DLT_EN10MB	    IEEE 802.3 Ethernet (10Mb, 100Mb, 1000Mb,
-							    and up);
-							    the 10MB in the DLT_ name is historical 
+    LINKTYPE_ETHERNET	1			DLT_EN10MB			IEEE 802.3 Ethernet (10Mb, 100Mb, 1000Mb,
+									and up);
+									the 10MB in the DLT_ name is historical 
     */
     if (pcap_datalink(handle) != DLT_EN10MB)
 	fprintf(stderr,
 	    "Device %s doesnt provide ethernet headers - not supported\n", DeviceIsPointerToChar);
 
-    /*int pcap_compile(pcap_t * p, struct bpf_program * fp,
-	char * str, int optimize, bpf_u_int32 mask);*/
+    /*int pcap_compile(pcap_t * p, struct bpf_program * fp, char * str, int optimize, bpf_u_int32 mask);*/
     //pcap_compile(handle, fcode);
 
     /*int pcap_setfilter(pcap_t * p, struct bpf_program * fp);*/
     pcap_setfilter(handle, fcode);
-
 
 }
