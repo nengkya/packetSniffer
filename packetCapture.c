@@ -85,15 +85,16 @@ int main() {
 		printf("\n");
     }
 
+    /*
+ 	pcap_lookupnet - find the IPv4 network number and netmask for a device
+  	int pcap_lookupnet(const char * device, bpf_u_int32 * netPointer, bpf_u_int32 * maskPointer, char * errorBuffer);
+  	*/
     device = allDevices;
 
     bpf_u_int32 *  netIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
     bpf_u_int32 * maskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
-	/*
- 	pcap_lookupnet - find the IPv4 network number and netmask for a device
-  	int pcap_lookupnet(const char * device, bpf_u_int32 * netPointer, bpf_u_int32 * maskPointer, char * errorBuffer);
-  	*/
-    pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32, maskIsPointerToBPFunsignedInt32, errorBufferChar256);
+
+	pcap_lookupnet(device->name, netIsPointerToBPFunsignedInt32, maskIsPointerToBPFunsignedInt32, errorBufferChar256);
     fprintf(stderr, "%s\n", device->name);
 
     /*:noh = no highlight after search in nvim*/
