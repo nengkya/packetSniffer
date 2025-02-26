@@ -82,10 +82,29 @@ int main() {
 		fprintf(stderr, "%s\n", errorBufferChar256);
 
 	for (device = allDevices; device != NULL; device = device->next) {
-		if (1 == deviceNumber) {
-	    	deviceNamePointer = device->name;
-		}
-    }
+
+		if (1 == deviceNumber) deviceNamePointer = device->name;
+    
+		printf("%d. %s   ", ++deviceNumber, device->name);
+
+		if (device->description) printf("%s", device->description);
+
+		printf("\n");
+
+	}
+
+	/*
+	pcap_lookup_net - find the IPv4 network number and netmask for a device
+	int pcap_looup_net(de);
+	*/
+
+
+
+
+
+}
+
+
 
 
 
