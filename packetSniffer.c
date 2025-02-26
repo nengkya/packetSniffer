@@ -95,11 +95,14 @@ int main() {
 
 	/*
 	pcap_lookup_net - find the IPv4 network number and netmask for a device
-	int pcap_looup_net(de);
+
+	int pcap_looup_net(const char * device, bpf_u_int32 * networkPointer, bpf_u_int32 * subMaskPointer, char * errorBuffer);
 	*/
+	device = allDevices;
 
+	bpf_u_int32 * networkIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
 
-
+	bpf_u_int32 * subMaskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
 
 
 }
