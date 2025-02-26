@@ -77,6 +77,10 @@ int main() {
 
 	int deviceNumber = 0;
 
+	bpf_u_int32 * networkPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+
+	bpf_u_int32 * subMaskPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+
 	/*int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); all devices pointer*/
 	if (pcap_findalldevs(&allDevices, errorBufferChar256) == -1)
 		fprintf(stderr, "%s\n", errorBufferChar256);
@@ -91,24 +95,27 @@ int main() {
 
 		printf("\n");
 
+		pcap_lookupnet(device->name, networkPointerToBPFunsignedInt32, subMaskPointerToBPFunsignedInt32, errorBufferChar256);
+
+		fprintf(stderr, "%s\n", device->name);
+
+
+
 	}
 
-	/*
-	pcap_lookup_net - find the IPv4 network number and netmask for a device
-
-	int pcap_looup_net(const char * device, bpf_u_int32 * networkPointer, bpf_u_int32 * subMaskPointer, char * errorBuffer);
-	*/
 	device = allDevices;
 
-	bpf_u_int32 * networkIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+	/*
+	pcap_lookupnet - find the IPv4 network number and netmask for a device
 
-	bpf_u_int32 * subMaskIsPointerToBPFunsignedInt32 = (bpf_u_int32 *)malloc(sizeof(bpf_u_int32));
+	int pcap_lookupnet(const char * device, bpf_u_int32 * networkPointer, bpf_u_int32 * subMaskPointer, char * errorBuffer);
+	*/
+	pcap_lookupnet(device->name, networkPointerToBPFunsignedInt32, subMaskPointerToBPFunsignedInt32, errorBufferChar256);
+
+	fprintf(stderr, "%s\n", device->name);
+
+	/*opening the device for sniffing*/
+
 
 
 }
-
-
-
-
-
-
