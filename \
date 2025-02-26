@@ -70,22 +70,22 @@ int main() {
 	warning: assignment to ‘pcap_if_t *’ {aka ‘struct pcap_if *’} from incompatible pointer type ‘pcap_if_t **’
 	{aka ‘struct pcap_if **’} [-Wincompatible-pointer-types]
 	for (device = allDevices; device != 0; device = device.next)
-	*/
-	pcap_if_t * allDevices = (pcap_if_t *)malloc(sizeof(pcap_if_t)), * device;
 
-	char errorBufferChar256[PCAP_ERRBUF_SIZE], * deviceNamePointer;
+	*/
+	pcap_if_t ** allDevices = (pcap_if_t **)malloc(sizeof(pcap_if_t)), * device;
+
+	char errorBufferChar256[PCAP_ERRBUF_SIZE], * deviceName;
 
 	int deviceNumber = 0;
 
 	/*int pcap_findalldevs(pcap_if_t ** alldevsp, char * errbuf); all devices pointer*/
-	if (pcap_findalldevs(&allDevices, errorBufferChar256) == -1)
+	if (pcap_findalldevs(allDevices, errorBufferChar256) == -1)
 		fprintf(stderr, "%s\n", errorBufferChar256);
 
-	for (device = allDevices; device != NULL; device = device->next) {
-		if (1 == deviceNumber) {
-	    	deviceNamePointer = device->name;
-		}
-    }
+	for (device = allDevices; device != 0; device = device.next) 
+		if (1 == deviceNumber)
+			deviceName = device->name;
+
 
 
 
