@@ -76,13 +76,13 @@ int main() {
     
     char * DeviceIsPointerToChar = (char *)malloc(55 * sizeof(char));
     for (device = allDevices; device != NULL; device = device->next) {
-	if (1 == i) {
-	    DeviceIsPointerToChar = device->name;
-	}
-	printf("%d. %s ", ++i, device->name);
-	if (device->description)
-	    printf("%s", device->description);
-	printf("\n");
+		if (1 == i) {
+	    	DeviceIsPointerToChar = device->name;
+		}
+		printf("%d. %s ", ++i, device->name);
+		if (device->description)
+	    	printf("%s", device->description);
+		printf("\n");
     }
 
     device = allDevices;
